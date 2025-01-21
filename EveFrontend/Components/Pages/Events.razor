@@ -1,0 +1,34 @@
+@page "/events"
+@using EveFrontend.Models
+@using EveFrontend.Services
+
+@inject EventService EventService
+
+<h3>Events</h3>
+
+@if (events == null)
+{
+    <p>Loading...</p>
+}
+else if (events.Count == 0)
+{
+    <p>No events found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var eveEvent in events)
+        {
+            <li>@eveEvent.Name (@eveEvent.Date.ToShortDateString())</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Event> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await EventService.GetEvents();
+    }
+}
