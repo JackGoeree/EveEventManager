@@ -1,0 +1,48 @@
+# Ignore build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+logs/
+
+# DotNet-specific files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Environment and build-related files
+.env
+.env.*
+
+# Dependency caches and package folders
+*.vs/
+.vscode/
+node_modules/
+wwwroot/lib/
+
+# Publish output
+publish/
+dist/
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.pdb
+*.mdb
+
+# Resharper and Rider files
+.idea/
+*.suo
+*.userprefs
+*.sln.iml
+
+# Azure files
+.localhistory/
+.publishsettings

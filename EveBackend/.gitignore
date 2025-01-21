@@ -1,0 +1,53 @@
+# Build output directories
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.pdb
+*.mdb
+
+# Dependency directories
+node_modules/
+wwwroot/lib/
+
+# Configuration files (if you have sensitive data, consider ignoring these)
+*.env
+*.env.*
+
+# Publish output
+publish/
+dist/
+
+# IDE-specific files
+.vscode/
+*.vs/
+.idea/
+
+# Rider files
+*.sln.iml
+
+# DotNet specific files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Azure specific
+.localhistory/
+.publishsettings
+
+# Docker files
+docker-compose.override.yml
+.docker/
