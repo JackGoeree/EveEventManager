@@ -51,3 +51,7 @@ artifacts/
 # Docker files
 docker-compose.override.yml
 .docker/
+
+# SQLite database and temporary files
+EveBackend.db-shm
+EveBackend.db-wal
