@@ -10,7 +10,7 @@
 <h3>Events</h3>
 
 @code {
-    private List<Event> events;
+    private List<Event> events = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,11 +32,59 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.Id</MudTd>
-        <MudTd>@context.Name</MudTd>
-        <MudTd>@context.Description</MudTd>
-        <MudTd>@context.Date.ToString("yyyy-MM-dd")</MudTd>
-        <MudTd>@context.Location</MudTd>
-        <MudTd>@context.MaxAttendees</MudTd>
+        <MudTd> 
+            @if (editingEvent == context)
+            {
+                <MudTextField @bind-Value="context.Name" />
+            }
+            else
+            {
+                @context.Name
+            }
+        </MudTd>
+        <MudTd>
+            @if (editingEvent == context)
+            {
+                <MudTextField Label="Description" 
+                @bind-Value="context.Description" 
+                FullWidth="true" 
+                Lines="5"  />
+            }
+            else
+            {
+                @context.Description
+            }
+        </MudTd>
+        <MudTd>
+            @if (editingEvent == context)
+            {
+                <MudDatePicker Date="context.Date" DateChanged="@(args => context.Date = args.Value)" />
+            }
+            else
+            {
+                @context.Date.ToString("yyyy-MM-dd")
+            }
+        </MudTd>
+        <MudTd>
+            @if (editingEvent == context)
+            {
+                <MudTextField @bind-Value="context.Location" />
+            }
+            else
+            {
+                @context.Location
+            }
+        </MudTd>
+        <MudTd>
+            @if (editingEvent == context)
+            {
+                <MudNumericField @bind-Value="context.MaxAttendees" />
+            }
+            else
+            {
+                @context.MaxAttendees
+            }
+        </MudTd>
         <MudTd>
             @if (context.Attendees?.Count > 0)
             {
@@ -46,12 +94,12 @@
             }
         </MudTd>
         <MudTd>
-            <MudButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Variant="Variant.Text">
-                Edit
+            <MudButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Variant="Variant.Text" OnClick="() => ToggleEdit(context)">
+                 @(editingEvent == context ? "Save" : "Edit")
             </MudButton>
         </MudTd>
         <MudTd>
-            <MudButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Variant="Variant.Text">
+            <MudButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Variant="Variant.Text" OnClick="() => DeleteEvent(context)">
                 Delete
             </MudButton>
         </MudTd>
@@ -60,15 +108,28 @@
 <br><br>
 
 @code {
-    private void EditEvent(Event eventToEdit)
+
+    private Event? editingEvent;
+
+     private async void ToggleEdit(Event eventToEdit)
     {
-        // Navigate to an edit page or open a dialog
-        Console.WriteLine($"Editing event: {eventToEdit.Name}");
+        if (editingEvent == eventToEdit)
+        {
+            await EventService.UpdateEvent(eventToEdit.Id, eventToEdit);
+            editingEvent = null;
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            editingEvent = eventToEdit;
+        }
     }
 
-    private void DeleteEvent(Event eventToDelete)
+    private async void DeleteEvent(Event eventToDelete)
     {
-        // Add confirmation and delete logic
+        await EventService.DeleteEvent(eventToDelete.Id);
+        events.Remove(eventToDelete);
+        await InvokeAsync(StateHasChanged);
         Console.WriteLine($"Deleting event: {eventToDelete.Name}");
     }
 
@@ -124,9 +185,9 @@
         Console.WriteLine($"Location: {EventModel.Location}");
         Console.WriteLine($"Max Attendees: {EventModel.MaxAttendees}");
         EventModel.Attendees = [];
-
-        await EventService.CreateEvent(EventModel);
-        events = await EventService.GetEvents();
+        Event newEvent = await EventService.CreateEvent(EventModel);
+        events.Add(newEvent);
+        await InvokeAsync(StateHasChanged);
     }
 }
 
