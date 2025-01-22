@@ -4,26 +4,10 @@
 @using EveFrontend.Services
 @inject AuthService AuthService
 @inject EventService EventService
+@inject NavigationManager Navigation
+@using MudBlazor
 
 <h3>Events</h3>
-
-@if (events == null)
-{
-    <p>Loading...</p>
-}
-else if (events.Count == 0)
-{
-    <p>No events found.</p>
-}
-else
-{
-    <ul>
-        @foreach (var eveEvent in events)
-        {
-            <li>@eveEvent.Name (@eveEvent.Date.ToShortDateString())</li>
-        }
-    </ul>
-}
 
 @code {
     private List<Event> events;
@@ -31,6 +15,67 @@ else
     protected override async Task OnInitializedAsync()
     {
         events = await EventService.GetEvents();
+    }
+}
+
+<MudTable Items="events" Dense="true" Hover="true" Bordered="true">
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Date</MudTh>
+        <MudTh>Location</MudTh>
+        <MudTh>Max Attendees</MudTh>
+        <MudTh>Attendees</MudTh>
+        <MudTh>Edit</MudTh>
+        <MudTh>Delete</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Id</MudTd>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Description</MudTd>
+        <MudTd>@context.Date.ToString("yyyy-MM-dd")</MudTd>
+        <MudTd>@context.Location</MudTd>
+        <MudTd>@context.MaxAttendees</MudTd>
+        <MudTd>
+            @if (context.Attendees?.Count > 0)
+            {
+                <MudTooltip Text="View Attendees">
+                    <MudIconButton Icon="@Icons.Material.Filled.People" Color="Color.Primary" />
+                </MudTooltip>
+            }
+        </MudTd>
+        <MudTd>
+            <MudButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Variant="Variant.Text">
+                Edit
+            </MudButton>
+        </MudTd>
+        <MudTd>
+            <MudButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Variant="Variant.Text">
+                Delete
+            </MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+<br><br>
+
+@code {
+    private void EditEvent(Event eventToEdit)
+    {
+        // Navigate to an edit page or open a dialog
+        Console.WriteLine($"Editing event: {eventToEdit.Name}");
+    }
+
+    private void DeleteEvent(Event eventToDelete)
+    {
+        // Add confirmation and delete logic
+        Console.WriteLine($"Deleting event: {eventToDelete.Name}");
+    }
+
+    private void ViewAttendees(Event eventToView)
+    {
+        // Logic for displaying attendees
+        Console.WriteLine($"Viewing attendees for: {eventToView.Name}");
     }
 }
 
@@ -81,5 +126,11 @@ else
         EventModel.Attendees = [];
 
         await EventService.CreateEvent(EventModel);
+        events = await EventService.GetEvents();
     }
 }
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider /> 
+<MudSnackbarProvider />
