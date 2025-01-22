@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<EveBackendDbContext>(options =>
     options.UseSqlite("Data Source=EveBackend.db"));
@@ -22,10 +21,27 @@ builder.Services.AddAuthentication(options =>
     microsoftOptions.ClientId = builder.Configuration["Authentication:Microsoft:ClientId"];
     microsoftOptions.ClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"];
     microsoftOptions.CallbackPath = "/signin-microsoft";
+
+    microsoftOptions.Scope.Add("openid");
+    microsoftOptions.Scope.Add("email");
+    microsoftOptions.Scope.Add("profile");
+
+    microsoftOptions.SaveTokens = true;
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5216") // Frontend origin
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
 
+app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -34,7 +50,7 @@ app.MapGet("/api/auth/login", async context =>
 {
     await context.ChallengeAsync(MicrosoftAccountDefaults.AuthenticationScheme, new AuthenticationProperties
     {
-        RedirectUri = "/api/auth/loginsuccess"
+        RedirectUri = "http://localhost:5066/api/auth/loginsuccess"
     });
 });
 
@@ -47,7 +63,7 @@ app.MapGet("/api/auth/loginsuccess", async context =>
         var email = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
         var name = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value;
 
-        await context.Response.WriteAsJsonAsync(new { Name = name, Email = email });
+        context.Response.Redirect($"http://localhost:5216/userinfo?name={Uri.EscapeDataString(name)}&email={Uri.EscapeDataString(email)}");
     }
     else
     {
@@ -62,7 +78,6 @@ app.MapGet("/api/auth/logout", async context =>
     context.Response.Redirect("/");
 });
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();

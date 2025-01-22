@@ -13,13 +13,16 @@ builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri("http://localhost:5066/");
 });
-
+builder.Services.AddHttpClient<AuthService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5066/");
+});
 builder.Services.AddHttpClient<EventService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5066/");
 });
+
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddAuthentication(options =>
 {
