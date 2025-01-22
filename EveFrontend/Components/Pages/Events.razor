@@ -1,7 +1,8 @@
 @page "/events"
+@rendermode InteractiveServer
 @using EveFrontend.Models
 @using EveFrontend.Services
-
+@inject AuthService AuthService
 @inject EventService EventService
 
 <h3>Events</h3>
@@ -30,5 +31,55 @@ else
     protected override async Task OnInitializedAsync()
     {
         events = await EventService.GetEvents();
+    }
+}
+
+<h2>Create Event</h2>
+
+<EditForm Model="@EventModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="EventModel.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="description">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="EventModel.Description" />
+    </div>
+
+    <div class="mb-3">
+        <label for="date">Date</label>
+        <InputDate id="date" TValue="DateTime" class="form-control" @bind-Value="EventModel.Date" />
+    </div>
+
+    <div class="mb-3">
+        <label for="location">Location</label>
+        <InputText id="location" class="form-control" @bind-Value="EventModel.Location" />
+    </div>
+
+    <div class="mb-3">
+        <label for="maxAttendees">Max Attendees</label>
+        <InputNumber id="maxAttendees" TValue="int" class="form-control" @bind-Value="EventModel.MaxAttendees" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    private Event EventModel = new Event();
+
+    private async void HandleValidSubmit()
+    {
+        Console.WriteLine($"Name: {EventModel.Name}");
+        Console.WriteLine($"Description: {EventModel.Description}");
+        Console.WriteLine($"Date: {EventModel.Date}");
+        Console.WriteLine($"Location: {EventModel.Location}");
+        Console.WriteLine($"Max Attendees: {EventModel.MaxAttendees}");
+        EventModel.Attendees = [];
+
+        await EventService.CreateEvent(EventModel);
     }
 }

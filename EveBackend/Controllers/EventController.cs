@@ -18,7 +18,7 @@ namespace EveBackend.Controllers
 
         // GET /api/events
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEvents([FromQuery] DateTime? date, [FromQuery] string category)
+        public async Task<ActionResult<IEnumerable<Event>>> GetEvents([FromQuery] DateTime? date, [FromQuery] string? category)
         {
             var query = _context.Events.AsQueryable();
 
@@ -37,7 +37,7 @@ namespace EveBackend.Controllers
 
         // POST /api/events
         [HttpPost]
-        public async Task<ActionResult<Event>> CreateEvent(Event eveEvent)
+        public async Task<ActionResult<Event>> CreateEvent([FromBody] Event eveEvent)
         {
             _context.Events.Add(eveEvent);
             await _context.SaveChangesAsync();

@@ -27,7 +27,7 @@ namespace EveFrontend.Services
         // Create a new event
         public async Task<Event> CreateEvent(Event newEvent)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/events", newEvent);
+           var response = await _httpClient.PostAsJsonAsync("api/events", newEvent);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<Event>();
         }
