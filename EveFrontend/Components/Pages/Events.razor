@@ -3,8 +3,10 @@
 @using EveFrontend.Models
 @using EveFrontend.Services
 @inject AuthService AuthService
+@inject IDialogService DialogService
 @inject EventService EventService
 @inject NavigationManager Navigation
+@inject UserState UserState
 @using MudBlazor
 
 <h3>Events</h3>
@@ -27,6 +29,7 @@
         <MudTh>Location</MudTh>
         <MudTh>Max Attendees</MudTh>
         <MudTh>Attendees</MudTh>
+        <MudTh>RSVP</MudTh>
         <MudTh>Edit</MudTh>
         <MudTh>Delete</MudTh>
     </HeaderContent>
@@ -89,9 +92,14 @@
             @if (context.Attendees?.Count > 0)
             {
                 <MudTooltip Text="View Attendees">
-                    <MudIconButton Icon="@Icons.Material.Filled.People" Color="Color.Primary" />
+                    <MudIconButton Icon="@Icons.Material.Filled.People" Color="Color.Primary" OnClick="() => ViewAttendees(context)"/>
                 </MudTooltip>
             }
+        </MudTd>
+        <MudTd>
+            <MudButton Disabled="@(!UserState.IsLoggedIn)" Color="Color.Primary" Variant="Variant.Text" OnClick="() => RSVP(context)">
+                 RSVP
+            </MudButton>
         </MudTd>
         <MudTd>
             <MudButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Variant="Variant.Text" OnClick="() => ToggleEdit(context)">
@@ -133,10 +141,29 @@
         Console.WriteLine($"Deleting event: {eventToDelete.Name}");
     }
 
-    private void ViewAttendees(Event eventToView)
+    private Task ViewAttendees(Event eventToView)
     {
-        // Logic for displaying attendees
-        Console.WriteLine($"Viewing attendees for: {eventToView.Name}");
+         var options = new DialogOptions { CloseOnEscapeKey = true };
+
+         var parameters = new DialogParameters
+            {
+                { "Attendees", eventToView.Attendees } 
+            };
+
+        return DialogService.ShowAsync<AttendeesDialog>("Attendees", parameters, options);
+    }
+
+    private async Task RSVP(Event eventToRSVP)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = await DialogService.ShowAsync<RSVPDialog>("RSVP", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            EventService.RSVPToEvent(eventToRSVP.Id, UserState.Email);
+        }
+        StateHasChanged();
     }
 }
 
@@ -174,17 +201,19 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 
+
 @code {
-    private Event EventModel = new Event();
+    private Event EventModel { get; set; } = new Event();
 
     private async void HandleValidSubmit()
     {
+        EventModel.Attendees = [];
+    
         Console.WriteLine($"Name: {EventModel.Name}");
         Console.WriteLine($"Description: {EventModel.Description}");
         Console.WriteLine($"Date: {EventModel.Date}");
         Console.WriteLine($"Location: {EventModel.Location}");
         Console.WriteLine($"Max Attendees: {EventModel.MaxAttendees}");
-        EventModel.Attendees = [];
         Event newEvent = await EventService.CreateEvent(EventModel);
         events.Add(newEvent);
         await InvokeAsync(StateHasChanged);

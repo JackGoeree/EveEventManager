@@ -47,9 +47,9 @@ namespace EveFrontend.Services
         }
 
         // RSVP to an event
-        public async Task RSVPToEvent(int id, string attendeeName)
+        public async Task RSVPToEvent(int id, string attendeeEmail)
         {
-            var response = await _httpClient.PostAsJsonAsync($"api/events/{id}/rsvp", attendeeName);
+            var response = await _httpClient.PostAsJsonAsync($"api/events/{id}/rsvp", attendeeEmail);
             response.EnsureSuccessStatusCode();
         }
     }

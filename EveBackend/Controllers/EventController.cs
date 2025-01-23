@@ -91,7 +91,7 @@ namespace EveBackend.Controllers
 
         // POST /api/events/{id}/rsvp
         [HttpPost("{id}/rsvp")]
-        public async Task<IActionResult> RSVPToEvent(int id, [FromBody] string attendeeName)
+        public async Task<IActionResult> RSVPToEvent(int id, [FromBody] string attendeeEmail)
         {
             var eveEvent = await _context.Events.FindAsync(id);
 
@@ -105,7 +105,7 @@ namespace EveBackend.Controllers
                 return BadRequest("The event has reached its maximum number of attendees.");
             }
 
-            eveEvent.Attendees.Add(attendeeName);
+            eveEvent.Attendees.Add(attendeeEmail);
             _context.Entry(eveEvent).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
