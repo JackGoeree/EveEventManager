@@ -1,13 +1,22 @@
 @page "/events"
 @rendermode InteractiveServer
+
+@using MudBlazor
 @using EveFrontend.Models
 @using EveFrontend.Services
+
 @inject AuthService AuthService
-@inject IDialogService DialogService
 @inject EventService EventService
-@inject NavigationManager Navigation
 @inject UserState UserState
-@using MudBlazor
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider /> 
+<MudSnackbarProvider />
+
 
 <h3>Events</h3>
 
@@ -179,9 +188,10 @@
 
         if (!result.Canceled)
         {
-            EventService.RSVPToEvent(eventToRSVP.Id, UserState.Email);
+            await EventService.RSVPToEvent(eventToRSVP.Id, UserState.Email);
         }
         StateHasChanged();
+        Snackbar.Add("Success! You are now attending this event.", Severity.Success);
     }
 }
 
@@ -242,8 +252,3 @@
         await InvokeAsync(StateHasChanged);
     }
 }
-
-<MudThemeProvider />
-<MudPopoverProvider />
-<MudDialogProvider /> 
-<MudSnackbarProvider />
