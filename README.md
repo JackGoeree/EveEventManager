@@ -17,10 +17,16 @@
 
 
 **FEATURES**
+- From the home page, log in by clicking the "Sign in with Microsoft" button.
+ 
+  ![image](https://github.com/user-attachments/assets/9be62747-4028-42f0-8642-37ba45092d7b)
+
 - Access the /events page to view a list of events. If the user is logged in, events can be edited, deleted or RSVP to add the current user as an attendee. A user cannot RSVP to an event again if they are already an attendee. On a successful RSVP, a success snackbar is displayed.
+  
   ![image](https://github.com/user-attachments/assets/6dd146df-e979-4d70-8704-135bde1d67f0)
 
 - Create a new event. All fields have validation. The new event is added to the database and the events list is updated dynamically.
+  
   ![image](https://github.com/user-attachments/assets/5397799d-6db1-4803-a195-7e1f0e164281)
 
 
