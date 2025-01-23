@@ -2,27 +2,17 @@
 
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject UserState UserState
 
-<h3>Welcome</h3>
-<p>Name: @Name</p>
-<p>Email: @Email</p>
+<h3>Logging in...</h3>
 
 @code {
-    private string? Name;
-    private string? Email;
-
     protected override async Task OnInitializedAsync()
     {
         var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
-        Name = query["name"];
-        Email = query["email"];
-    }
-
-    public class UserInfo
-    {
-        public string Name { get; set; }
-        public string Email { get; set; }
+        UserState.SetUser(query["name"], query["email"]);
+        Navigation.NavigateTo("/");
     }
 }

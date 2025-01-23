@@ -1,4 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using EveFrontend.Services
+@inherits LayoutComponentBase
+
+@inject UserState UserState
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 
 <div class="page">
     <div class="sidebar">
@@ -6,6 +11,17 @@
     </div>
 
     <main>
+        <nav class="navbar">
+        @if (UserState.IsLoggedIn)
+        {
+            <span>Welcome, @UserState.Name!</span>
+            <button @onclick="Logout">Logout</button>
+        }
+        else
+        {
+        <span>Not Logged In</span>
+        }
+    </nav>
         <article class="content px-4">
             @Body
         </article>
@@ -17,3 +33,12 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+
+@code {
+    private void Logout()
+    {
+        UserState.ClearUser();
+        Navigation.NavigateTo("/");
+    }
+}

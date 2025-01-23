@@ -40,6 +40,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddMudServices();
 
+builder.Services.AddSingleton<UserState>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
