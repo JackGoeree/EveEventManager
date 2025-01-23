@@ -97,17 +97,17 @@
             }
         </MudTd>
         <MudTd>
-            <MudButton Disabled="@(!UserState.IsLoggedIn)" Color="Color.Primary" Variant="Variant.Text" OnClick="() => RSVP(context)">
+            <MudButton Disabled="@(!UserState.IsLoggedIn || (context.Attendees != null && context.Attendees.Contains(UserState?.Email)))" Color="Color.Primary" Variant="Variant.Text" OnClick="() => RSVP(context)">
                  RSVP
             </MudButton>
         </MudTd>
         <MudTd>
-            <MudButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Variant="Variant.Text" OnClick="() => ToggleEdit(context)">
+            <MudButton Disabled="@(!UserState.IsLoggedIn)" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Variant="Variant.Text" OnClick="() => ToggleEdit(context)">
                  @(editingEvent == context ? "Save" : "Edit")
             </MudButton>
         </MudTd>
         <MudTd>
-            <MudButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Variant="Variant.Text" OnClick="() => DeleteEvent(context)">
+            <MudButton Disabled="@(!UserState.IsLoggedIn)" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Variant="Variant.Text" OnClick="() => DeleteEvent(context)">
                 Delete
             </MudButton>
         </MudTd>
