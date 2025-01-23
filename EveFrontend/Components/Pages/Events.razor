@@ -176,26 +176,31 @@
     <div class="mb-3">
         <label for="name">Name</label>
         <InputText id="name" class="form-control" @bind-Value="EventModel.Name" />
+        <ValidationMessage For="@(() => EventModel.Name)" />
     </div>
 
     <div class="mb-3">
         <label for="description">Description</label>
         <InputTextArea id="description" class="form-control" @bind-Value="EventModel.Description" />
+        <ValidationMessage For="@(() => EventModel.Description)" />
     </div>
 
     <div class="mb-3">
         <label for="date">Date</label>
         <InputDate id="date" TValue="DateTime" class="form-control" @bind-Value="EventModel.Date" />
+        <ValidationMessage For="@(() => EventModel.Date)" />
     </div>
 
     <div class="mb-3">
         <label for="location">Location</label>
         <InputText id="location" class="form-control" @bind-Value="EventModel.Location" />
+        <ValidationMessage For="@(() => EventModel.Location)" />
     </div>
 
     <div class="mb-3">
         <label for="maxAttendees">Max Attendees</label>
         <InputNumber id="maxAttendees" TValue="int" class="form-control" @bind-Value="EventModel.MaxAttendees" />
+        <ValidationMessage For="@(() => EventModel.MaxAttendees)" />
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
