@@ -97,19 +97,37 @@
             }
         </MudTd>
         <MudTd>
-            <MudButton Disabled="@(!UserState.IsLoggedIn || (context.Attendees != null && context.Attendees.Contains(UserState?.Email)))" Color="Color.Primary" Variant="Variant.Text" OnClick="() => RSVP(context)">
-                 RSVP
-            </MudButton>
+            <MudTooltip 
+                Disabled="@(!(context.Attendees != null && context.Attendees.Contains(UserState?.Email)) && UserState.IsLoggedIn)"
+                Text="@(context.Attendees != null && context.Attendees.Contains(UserState?.Email) 
+                ? "You are already attending this event" 
+                : !UserState.IsLoggedIn 
+                ? "You must be logged in to RSVP" 
+                : "")">
+                <MudButton 
+                Disabled="@(!UserState.IsLoggedIn || (context.Attendees != null && context.Attendees.Contains(UserState?.Email)))"
+                Color="Color.Primary" Variant="Variant.Text" OnClick="() => RSVP(context)">
+                    RSVP
+                </MudButton>
+            </MudTooltip>
         </MudTd>
         <MudTd>
+            <MudTooltip 
+            Disabled="@(UserState.IsLoggedIn)"
+            Text="You must be logged in to edit">
             <MudButton Disabled="@(!UserState.IsLoggedIn)" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Variant="Variant.Text" OnClick="() => ToggleEdit(context)">
                  @(editingEvent == context ? "Save" : "Edit")
             </MudButton>
+            </MudTooltip>
         </MudTd>
         <MudTd>
+            <MudTooltip 
+            Disabled="@(UserState.IsLoggedIn)"
+            Text="You must be logged in to delete">
             <MudButton Disabled="@(!UserState.IsLoggedIn)" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Variant="Variant.Text" OnClick="() => DeleteEvent(context)">
                 Delete
             </MudButton>
+            </MudTooltip>
         </MudTd>
     </RowTemplate>
 </MudTable>
@@ -171,17 +189,16 @@
 
 <EditForm Model="@EventModel" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
     <div class="mb-3">
         <label for="name">Name</label>
-        <InputText id="name" class="form-control" @bind-Value="EventModel.Name" />
+        <InputText id="name" class="form-control" placeholder="Enter a name for this event..." @bind-Value="EventModel.Name" />
         <ValidationMessage For="@(() => EventModel.Name)" />
     </div>
 
     <div class="mb-3">
         <label for="description">Description</label>
-        <InputTextArea id="description" class="form-control" @bind-Value="EventModel.Description" />
+        <InputTextArea id="description" class="form-control" placeholder="Enter a description for this event..." @bind-Value="EventModel.Description" />
         <ValidationMessage For="@(() => EventModel.Description)" />
     </div>
 
@@ -193,7 +210,7 @@
 
     <div class="mb-3">
         <label for="location">Location</label>
-        <InputText id="location" class="form-control" @bind-Value="EventModel.Location" />
+        <InputText id="location" class="form-control" placeholder="Enter a location for this event..." @bind-Value="EventModel.Location" />
         <ValidationMessage For="@(() => EventModel.Location)" />
     </div>
 
@@ -203,6 +220,7 @@
         <ValidationMessage For="@(() => EventModel.MaxAttendees)" />
     </div>
 
+    <ValidationSummary />
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 
