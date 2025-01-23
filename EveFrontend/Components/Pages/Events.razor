@@ -1,9 +1,9 @@
 @page "/events"
 @rendermode InteractiveServer
 
-@using MudBlazor
 @using EveFrontend.Models
 @using EveFrontend.Services
+@using MudBlazor
 
 @inject AuthService AuthService
 @inject EventService EventService
@@ -12,11 +12,10 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
 
-<MudThemeProvider />
-<MudPopoverProvider />
 <MudDialogProvider /> 
+<MudPopoverProvider />
 <MudSnackbarProvider />
-
+<MudThemeProvider />
 
 <h3>Events</h3>
 
@@ -143,9 +142,7 @@
 <br><br>
 
 @code {
-
     private Event? editingEvent;
-
      private async void ToggleEdit(Event eventToEdit)
     {
         if (editingEvent == eventToEdit)
@@ -179,7 +176,6 @@
 
         return DialogService.ShowAsync<AttendeesDialog>("Attendees", parameters, options);
     }
-
     private async Task RSVP(Event eventToRSVP)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -234,19 +230,12 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 
-
 @code {
     private Event EventModel { get; set; } = new Event();
 
     private async void HandleValidSubmit()
     {
         EventModel.Attendees = [];
-    
-        Console.WriteLine($"Name: {EventModel.Name}");
-        Console.WriteLine($"Description: {EventModel.Description}");
-        Console.WriteLine($"Date: {EventModel.Date}");
-        Console.WriteLine($"Location: {EventModel.Location}");
-        Console.WriteLine($"Max Attendees: {EventModel.MaxAttendees}");
         Event newEvent = await EventService.CreateEvent(EventModel);
         events.Add(newEvent);
         await InvokeAsync(StateHasChanged);

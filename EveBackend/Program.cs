@@ -10,6 +10,16 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<EveBackendDbContext>(options =>
     options.UseSqlite("Data Source=EveBackend.db"));
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5216") // Frontend origin
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -29,19 +39,12 @@ builder.Services.AddAuthentication(options =>
     microsoftOptions.SaveTokens = true;
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:5216") // Frontend origin
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
 var app = builder.Build();
 
+app.UseRouting();
+
 app.UseCors();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -81,8 +84,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
-
-app.UseRouting();
 
 app.MapControllers();
 

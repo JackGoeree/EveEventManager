@@ -11,7 +11,7 @@ namespace EveFrontend.Services
             _httpClient = httpClient;
         }
 
-        // Fetch all events with optional filtering
+        // Fetch all events
         public async Task<List<Event>> GetEvents(string? date = null, string? category = null)
         {
             var query = "";

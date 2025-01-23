@@ -5,7 +5,6 @@ using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -24,6 +23,8 @@ builder.Services.AddHttpClient<EventService>(client =>
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddMudServices();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -38,13 +39,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddMudServices();
-
 builder.Services.AddSingleton<UserState>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -56,7 +54,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAntiforgery();
 
-// Ensure authentication and authorization middleware are included
 app.UseAuthentication();
 app.UseAuthorization();
 

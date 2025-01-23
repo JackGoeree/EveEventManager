@@ -7,7 +7,6 @@ namespace EveFrontend.Services
         private readonly HttpClient _httpClient;
          private readonly NavigationManager _navigationManager;
 
-
         public AuthService(HttpClient httpClient, NavigationManager navigationManager)
         {
             _httpClient = httpClient;

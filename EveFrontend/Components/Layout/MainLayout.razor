@@ -1,9 +1,11 @@
 ﻿@using EveFrontend.Services
 @inherits LayoutComponentBase
 
-@inject UserState UserState
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject UserState UserState
+
+<MudDialogProvider />
 
 <div class="page">
     <div class="sidebar">
@@ -42,5 +44,3 @@
         Navigation.NavigateTo("/");
     }
 }
-
-<MudDialogProvider />
